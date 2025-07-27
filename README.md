@@ -57,7 +57,7 @@ UPDATE club_member_info_cleaned
 SET martial_status = 
   CASE 
     WHEN martial_status = 'divored' THEN 'divorced'
-    WHEN martial_status IS NULL OR TRIM(martial_status) = ' ' THEN 'married'
+    WHEN martial_status IS NULL OR TRIM(martial_status) = '' THEN 'married'
     ELSE martial_status
   END;
   ```
