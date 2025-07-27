@@ -1,6 +1,6 @@
 This is an educational project on data cleaning and preparation using SQL. The original database in CSV format is located in the file club_member_info.csv. Here, we will explore the steps that need to be applied to obtain a cleansed version of the dataset.
 
-Let's inspect the initial rows to analyze the date in its original format
+##### **1. Let's inspect the initial rows to analyze the date in its original format**
 ```
 SELECT * FROM club_member_info c LIMIT 10
 ```
@@ -18,9 +18,7 @@ SELECT * FROM club_member_info c LIMIT 10
 |mendie alexandrescu|46|single|malexandrescu8@state.gov|504-918-4753|34 Delladonna Terrace,New Orleans,Louisiana|Systems Administrator III|3/12/1921|
 | fey kloss|52|married|fkloss9@godaddy.com|808-177-0318|8976 Jackson Park,Honolulu,Hawaii|Chemical Engineer|11/5/2014|
 
-
-**Create a new table for cleaning**
-
+##### **2. Create a new table for cleaning**
 Let's generate a new table where we can manipulate and restructure the data without modifying the original dataset.  
 ```
 CREATE TABLE club_member_info_cleaned (
@@ -39,3 +37,34 @@ CREATE TABLE club_member_info_cleaned (
 INSERT INTO club_member_info_cleaned
 SELECT * FROM club_member_info;
 ```
+##### **3. Cleaning data**
+
+###### Update age
+```
+UPDATE club_member_info_cleaned 
+SET age = (SELECT 
+	ROUND(AVG(age),0) FROM club_member_info_cleaned WHERE age < 100) 
+WHERE age > 100
+```
+###### Update full name
+```
+UPDATE club_member_info_cleaned 
+SET full_name = TRIM(full_name)
+```
+###### Update martial status
+```
+UPDATE club_member_info_cleaned
+SET martial_status = 
+  CASE 
+    WHEN martial_status = 'divored' THEN 'divorced'
+    WHEN martial_status IS NULL OR TRIM(martial_status) = ' ' THEN 'married'
+    ELSE martial_status
+  END;
+  ```
+###### Update job title
+```
+UPDATE club_member_info_cleaned 
+SET job_title = 'Senior Sales Associate'
+WHERE TRIM(job_title) = '';
+```
+
